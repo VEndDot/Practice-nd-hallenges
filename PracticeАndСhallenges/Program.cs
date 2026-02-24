@@ -23,7 +23,17 @@ namespace PracticeАndСhallenges
             //Task_10();
             //Task_11();
             //Task_12();
-            //Task_12Refactor();
+            Task_12Refactor();
+            //Task_13();
+
+        }
+
+        /// <summary>
+        /// Средний балл
+        /// </summary>
+        public static void Task_13()
+        { 
+        
         }
 
         /// <summary>
@@ -52,7 +62,6 @@ namespace PracticeАndСhallenges
                         continue;
                     // удалить товар
                     case "2":
-                        GetList();
                         DeleteProduct();
                         GetList();
                         continue;
@@ -117,9 +126,9 @@ namespace PracticeАndСhallenges
             void GetList()
             {
                 Console.Clear();
-                foreach (var item in shoppingList)
+                for (int i = 0; i < shoppingList.Count(); i++)
                 {
-                    Console.WriteLine($"{shoppingList.IndexOf(item)}- {item}");
+                    Console.WriteLine($"{i}- {shoppingList[i]}");
                 }
                 Console.WriteLine();
             }
