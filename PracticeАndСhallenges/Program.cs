@@ -1,10 +1,251 @@
 ﻿namespace PracticeАndСhallenges
 {
+    /// <summary>
+    /// Просто решаю разные задачки
+    /// </summary>
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            //Task_1();
+            //Task_2();
+            //Task_3();
+            //Task_3_1();
+            //Task_4();
+            //Task_5();
+            //Task_6();
+            //Task_7();
+            //Task_8();
+            //Task_9();
+            //Task_10();
+        }
+
+
+        /// <summary>
+        /// Простые числа
+        /// </summary>
+        public static void Task_10()
+        {
+            //for (int i = 2; i < 100; i++)
+            //{
+            //    bool flag = true;
+            //    for (int j = 2; j < i; j++)
+            //    {
+            //        if (i % j == 0)
+            //        { 
+                        
+            //        }
+            //    }
+            //}
+        }
+
+        /// <summary>
+        /// Угадай число
+        /// </summary>
+        public static void Task_9()
+        {
+            Random rand = new Random();
+            int secret = rand.Next(1, 101);
+            int count = 0;
+            do 
+            {
+                count++;
+                Console.WriteLine($"Компьютер: Я загадал число 1 до 100");
+                Console.Write("Ты: ");
+                if (!int.TryParse(Console.ReadLine(), out int userRespons))
+                {
+                    Console.WriteLine("Ты ввел не число");
+                    continue;
+                }
+
+                if (userRespons == secret)
+                { 
+                    break;
+                }
+                else if (userRespons > secret)
+                {
+                    Console.WriteLine("Меньше!");
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine("Больше!");
+                    continue;
+                }
+
+            } while (true);
+            
+            Console.WriteLine($"Тебе потребовалось {count} попыток");
+        }
+
+        /// <summary>
+        /// Треугольник из звезд
+        /// </summary>
+        public static void Task_8()
+        {
+            Console.Write("Ввод: ");
+            int.TryParse(Console.ReadLine(), out int height);
+
+            for (int i = 1; i <= height; i++)
+            {
+                for (int j = 1; j <= i; j++)
+                {
+                    Console.Write("*");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        /// <summary>
+        /// Подсчет букв
+        /// </summary>
+        public static void Task_7()
+        {
+            Console.Write("Ввод: ");
+            string userInput = Console.ReadLine();
+            int count = 0;
+
+            char[] allVowels = { 
+                    // English
+                    'a','e','i','o','u','A','E','I','O','U',
+                    // Russian  
+                    'а','е','ё','и','о','у','ы','э','ю','я',
+                    'А','Е','Ё','И','О','У','Ы','Э','Ю','Я'
+            };
+
+
+
+            foreach (var letter in userInput)
+            {
+                count += allVowels.Contains(letter) ? 1 : 0;
+            }
+
+            Console.WriteLine(count);
+        }
+
+        /// <summary>
+        /// Переворот массива
+        /// </summary>
+        public static void Task_6()
+        {
+            string[] names = { "Alex", "Eddie", "David", "Michael"};
+
+            for (int i = names.Length - 1; i >= 0; i--)
+            {
+                Console.WriteLine(names[i]);
+            }
+        }
+
+        /// <summary>
+        /// Фильтр четных
+        /// </summary>
+        public static void Task_5()
+        {
+            int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+
+            List<int> evenNumbers = new List<int>();
+
+            foreach (int number in numbers)
+            {
+                if (number % 2 == 0)
+                { 
+                    evenNumbers.Add(number);
+                }
+            }
+
+            foreach (var eNumber in evenNumbers)
+            {
+                Console.Write(eNumber + " ");
+            }
+        }
+
+        /// <summary>
+        /// Поиск максимума
+        /// </summary>
+        public static void Task_4()
+        {
+            int[] numbers = { 3, 7, 2, 9, 1, 5 };
+            int max = numbers[0];
+
+            foreach (var num in numbers)
+            {
+                max = num > max ? num : max;
+            }
+
+            Console.WriteLine(max); 
+
+        }
+
+        /// <summary>
+        /// Таблица умножения полная
+        /// </summary>
+        public static void Task_3_1()
+        {
+            for (int i = 1; i < 10; i++)
+            {
+                Console.Write($"{i}|");   
+                for (int j = 1; j < 10; j++)
+                {
+                    Console.Write($" {j*i,3} ");
+                }
+                Console.WriteLine("|");
+            }
+        }
+
+        /// <summary>
+        /// Обратный отсчет
+        /// </summary>
+        public static void Task_3()
+        {
+            for (int i = 10; i > 0; i--)
+            { 
+                Console.WriteLine(i);
+            }
+            Console.WriteLine("Поехали!");
+        }
+
+        /// <summary>
+        /// Таблица умножения простая
+        /// </summary>
+        public static void Task_2()
+        {
+            Console.Write("Ввод: ");
+            if (!int.TryParse(Console.ReadLine(), out int userInput) || (userInput <= 0 || userInput > 10))
+            {
+                Console.WriteLine("Неверный ввод!");
+            }
+
+            Console.WriteLine("Вывод: ");
+
+            for (int i = 1; i <= 10; i++)
+            {
+                Console.WriteLine($"{userInput} x {i} = {userInput*i}");
+            }
+        }
+
+        /// <summary>
+        /// Сумма чисел
+        /// </summary>
+        public static void Task_1()
+        {
+            int sum = 0;
+
+            int.TryParse(Console.ReadLine(), out int n);
+
+            Console.WriteLine($"Введенное число: {n}");
+
+            for (int i = 10; n > 0;)
+            {
+                Console.WriteLine($"n: {n}; i: {i}; n/i: {n}/{i} = {n / i};");
+
+                sum += n % i;
+                Console.WriteLine($"- {sum} += ({n} - ({n} / {i})*{i}) = {(n - (n / i) * i)}");
+                n /= i;
+
+                Thread.Sleep(1000);
+            }
+
+            Console.WriteLine($"Sum: {sum}");
         }
     }
 }
