@@ -1,5 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using static System.Net.WebRequestMethods;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PracticeАndСhallenges
 {
@@ -23,17 +25,129 @@ namespace PracticeАndСhallenges
             //Task_10();
             //Task_11();
             //Task_12();
-            Task_12Refactor();
+            //Task_12Refactor();
             //Task_13();
+            //Task_14();
+            //Task_15();
+            //Task_16();
+            //Task_17();
 
+
+        }
+
+
+        /// <summary>
+        /// генератор паролей 
+        /// </summary>
+        public static void Task_17()
+        {
+            Random rand = new Random();
+            Console.Write("Ввод: ");
+            int.TryParse(Console.ReadLine(), out int len);
+            string password = "";
+
+            for (int i = 0; i <= 12; i++)
+            {
+                password += (char)rand.Next(32, 128);
+            }
+
+            Console.WriteLine(password);
+        }
+
+
+        /// <summary>
+        /// Палиндром
+        /// </summary>
+        public static void Task_16()
+        {
+            Console.Write("Ввод: ");
+            string userInput = Console.ReadLine();
+            string str = "";
+
+            for (int i = userInput.Length - 1; i >= 0; i--)
+            {
+                str += userInput[i];
+            }
+
+            if (userInput.ToLower().Replace(" ", "") == str.ToLower().Replace(" ", ""))
+            {
+                Console.WriteLine($"Строка: {userInput} является палиндромом");
+            }
+            else
+            { 
+                Console.WriteLine($"Строка: \"{userInput}\" НЕ является палиндромом");
+            }
+
+        }
+
+        /// <summary>
+        /// "Шифр Цезаря" можно через %26 но сделал так
+        /// </summary>
+        public static void Task_15()
+        {
+            Console.WriteLine("Введите строку: ");
+            string userInput = Console.ReadLine();
+            int.TryParse(Console.ReadLine(), out int shift);
+
+            foreach (var elem in userInput)
+            {
+                Console.Write((char)(elem+shift));    
+            }
+
+         //   Console.WriteLine($"{(int)'A' + 3} {(int)'D'}");
+        }
+
+        /// <summary>
+        /// Пузырьковая сортировка
+        /// </summary>
+        public static void Task_14()
+        {
+            int[] numbers = { 64, 34, 25, 12, 22, 11, 90 };
+
+            for (int i = 0; i < numbers.Length -1; i++)
+            {
+                for (int j = 0; j < numbers.Length - 1 - i; j++)
+                {
+                    if (numbers[j] > numbers[j + 1])
+                    { 
+                        var temp = numbers[j];
+                        numbers[j] = numbers[j + 1];
+                        numbers[j + 1] = temp;
+                    }
+                }
+            }
         }
 
         /// <summary>
         /// Средний балл
         /// </summary>
         public static void Task_13()
-        { 
-        
+        {
+            int bestScore = 0;
+            int middleScore = 0;
+            int sum = 0;
+            string bestStudent = "";
+
+            Dictionary<string, int> students = new()
+            {
+                ["Alex"] = 85,
+                ["Eddie"] = 92,
+                ["David"] = 78
+            };
+
+            foreach (var student in students)
+            { 
+                Console.WriteLine($"Имя: {student.Key} балл: {student.Value}");
+                sum += student.Value;
+
+                if (student.Value >= bestScore)
+                { 
+                    bestScore = student.Value;
+                    bestStudent = student.Key;
+                }
+            }
+            Console.WriteLine($"Средний балл: {sum/students.Count}");
+            Console.WriteLine($"Лучший балл {bestScore} у {bestStudent}");
         }
 
         /// <summary>
