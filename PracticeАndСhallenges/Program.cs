@@ -1,4 +1,7 @@
-﻿namespace PracticeАndСhallenges
+﻿using System.Text.RegularExpressions;
+using static System.Net.WebRequestMethods;
+
+namespace PracticeАndСhallenges
 {
     /// <summary>
     /// Просто решаю разные задачки
@@ -18,6 +21,135 @@
             //Task_8();
             //Task_9();
             //Task_10();
+            //Task_11();
+            Task_12();
+        }
+
+        /// <summary>
+        /// Список покупок
+        /// Данная задача решена намеренно так. Главное, чтобы работала. 
+        /// </summary>
+        public static void Task_12()
+        {
+            // список покупок 
+            List<string> shoppingList = new List<string>() {"Молоко", "Мясо", "Яйца" };
+            string userInput = "";
+            string message = "1. Добавить товар\n2. Удалить товар\n3. Показать список\n4. Выход";
+            do
+            {
+                Console.Write($"{message}\nВведите: ");
+                userInput = Console.ReadLine();
+                // меню
+                switch (userInput)
+                {
+                    // добавить элементы в масссив
+                    case "1":
+                        Console.Write("Введите товар, который нужно добавить в список: ");
+                        // удаляем (/;*.) и т.п. и разбиваем строку на массив используя пробелы
+                        ListFill();
+                        continue;
+                    // удалить элементы из массива
+                    case "2":
+                        GetList();
+                        while (shoppingList.Count > 0)
+                        {
+                            Console.WriteLine("Чтобы выйти введите -1");
+                            Console.Write("Введите товар, который хотите удалить: ");
+                            int.TryParse(Console.ReadLine(), out int index);
+                            // выход из цикла
+                            if (index == -1)
+                            {
+                                break;
+                            }
+                            if (index > shoppingList.Count() - 1 || index < 0)
+                            {
+                                Console.WriteLine("Элемента с таким индексом нет");
+                                continue;
+                            }
+
+                            shoppingList.RemoveAt(index);
+                            
+                            GetList();  
+                        }
+                        continue;
+                    // показать список
+                    case "3":
+                        if (shoppingList.Count() > 0)
+                        {
+                            GetList();
+                        }
+                        else
+                        { 
+                            Console.WriteLine("Список пуст! Добавте товар\n");
+                        }
+                        continue;
+                    // выход из программы
+                    case "4":
+                        Console.WriteLine("Прощайте!");
+                        break;
+                }
+            } while (userInput != "4");
+
+            void ListFill()
+            {
+                foreach (var item in Regex.Replace(Console.ReadLine().ToLower(), @"[^\w\s]", "").Split(" "))
+                {
+                    if (item == "")
+                    {
+                        continue;
+                    }
+                    shoppingList.Add(item);
+                }
+            }
+
+            void GetList()
+            {
+                Console.Clear();
+                foreach (var item in shoppingList)
+                {
+                    Console.WriteLine($"{shoppingList.IndexOf(item)}- {item}");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        /// <summary>
+        /// Частота слов
+        /// </summary>
+        public static void Task_11()
+        {
+            Dictionary<string, int> words = new Dictionary<string, int>();
+            Console.WriteLine("Ввод: ");
+            string str = Console.ReadLine();
+            string newWord = "";
+
+
+            foreach (var word in str.Split(" ")) 
+            { 
+                newWord = Regex.Replace(word, @"[^\w\s]", "");
+
+                if (newWord == "")
+                {
+                    continue;
+                }
+
+                if (words.ContainsKey(newWord))
+                {
+                    words[newWord] += 1;
+                }
+                else
+                { 
+                    words.Add(newWord, 1);
+                }
+
+
+            }
+
+            foreach (var word in words) 
+            { 
+                Console.WriteLine($"{word.Key}: {word.Value}");
+            }
+
         }
 
 
@@ -26,17 +158,23 @@
         /// </summary>
         public static void Task_10()
         {
-            //for (int i = 2; i < 100; i++)
-            //{
-            //    bool flag = true;
-            //    for (int j = 2; j < i; j++)
-            //    {
-            //        if (i % j == 0)
-            //        { 
-                        
-            //        }
-            //    }
-            //}
+            for (int i = 2; i < 100; i++)
+            {
+                bool flag = true;
+                for (int j = 2; j < i; j++)
+                {
+                    if (i % j == 0)
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+
+                if (flag)
+                {
+                    Console.WriteLine(i);
+                }
+            }
         }
 
         /// <summary>
