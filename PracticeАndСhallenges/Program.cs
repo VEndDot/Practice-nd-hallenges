@@ -22,8 +22,122 @@ namespace PracticeАndСhallenges
             //Task_9();
             //Task_10();
             //Task_11();
-            Task_12();
+            //Task_12();
+            //Task_12Refactor();
         }
+
+        /// <summary>
+        /// Рефакторинг 12 задачи. Список покупок 2.0.
+        /// Просто разбиваю код на несколько небольших локальных функций.
+        /// Данные в фукции не передаю, так-как область видимости позволяет 
+        /// работать с shoppingList как с глобальным полем/>
+        /// </summary>
+        public static void Task_12Refactor()
+        {
+            // Список покупок
+            List<string> shoppingList = new List<string>() { "Молоко", "Мясо", "Яйца" };
+            // Ввод пользователя
+            string userInput = "";
+
+            do
+            {
+                ShowMenu();
+                userInput = Console.ReadLine()?.Trim();
+
+                switch (userInput)
+                {
+                    // добавить товар
+                    case "1":
+                        AddProduct();
+                        continue;
+                    // удалить товар
+                    case "2":
+                        GetList();
+                        DeleteProduct();
+                        GetList();
+                        continue;
+                    // показать товары
+                    case "3":
+                        ShowList();
+                        continue;
+                    // выйти из программы
+                    case "4":
+                        break;
+                }
+
+            }while (userInput != "4");
+
+            // показать меню
+            void ShowMenu()
+            {
+                Console.WriteLine("1. Добавить товар\n2. Удалить товар\n3. Показать список\n4. Выход");
+                Console.Write($"\nВведите: ");
+            }
+
+            // добавить товар
+            void AddProduct()
+            {
+                Console.Write("Введите товар, который нужно добавить в список: ");
+                foreach (var item in Regex.Replace(Console.ReadLine().ToLower(), @"[^\w\s]", "").Split(" "))
+                {
+                    if (item == "")
+                    {
+                        continue;
+                    }
+                    shoppingList.Add(item);
+                }
+            }
+            
+            // удалить товар
+            void DeleteProduct()
+            {
+                while (shoppingList.Count > 0)
+                {
+                    Console.WriteLine("Чтобы выйти введите -1");
+                    Console.Write("Введите товар, который хотите удалить: ");
+                    int.TryParse(Console.ReadLine(), out int index);
+                    // выход из цикла
+                    if (index == -1)
+                    {
+                        break;
+                    }
+                    if (index > shoppingList.Count() - 1 || index < 0)
+                    {
+                        Console.WriteLine("Элемента с таким индексом нет");
+                        continue;
+                    }
+
+                    shoppingList.RemoveAt(index);
+
+                    GetList();
+                }
+            }
+
+            // загрузить список
+            void GetList()
+            {
+                Console.Clear();
+                foreach (var item in shoppingList)
+                {
+                    Console.WriteLine($"{shoppingList.IndexOf(item)}- {item}");
+                }
+                Console.WriteLine();
+            }
+
+            // показать список
+            void ShowList()
+            {
+                if (shoppingList.Count() > 0)
+                {
+                    GetList();
+                }
+                else
+                {
+                    Console.WriteLine("Список пуст! Добавте товар\n");
+                }
+            }
+        }
+
 
         /// <summary>
         /// Список покупок
