@@ -1,7 +1,9 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using СustomPracticeTasks;
 using static System.Net.WebRequestMethods;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace PracticeАndСhallenges
 {
@@ -31,6 +33,40 @@ namespace PracticeАndСhallenges
             //Task_15();
             //Task_16();
             //Task_17();
+
+            //MyTask.TheMatrixOfMultiplication();
+            //MyTask.SumDigitsNumber();
+            //MyTask.GuessNumber();
+            //MyTask.DrawRectangle();
+            //MyTask.SimpleNumber();
+            //MyTask.ArmstrongNumbers();
+            //MyTask.LuckyTicket();
+
+
+            //Random rand = new Random();
+            //List<int> cells = new List<int>();
+            //List<int> cellsCopy = new List<int>();
+            //cellsCopy = cells;
+
+            //// наполняем список 20ю рандомными знач 
+            //for (int i = 0; i < 20; i++)
+            //{
+            //    cells.Add(rand.Next(2)); // 0 - мертвая клетка, 1 - живая
+            //}
+
+            //foreach (var cell in cells)
+            //{
+            //    if (cell == 0)
+            //    {
+            //        Console.Write(".");
+            //    }
+            //    else
+            //    {
+            //        Console.Write("#");
+            //    }
+            //}
+
+            //Console.WriteLine();
 
 
         }
@@ -604,6 +640,7 @@ namespace PracticeАndСhallenges
         public static void Task_1()
         {
             int sum = 0;
+
 
             int.TryParse(Console.ReadLine(), out int n);
 

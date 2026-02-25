@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="PracticeАndСhallenges/PracticeАndСhallenges.csproj" />
+  <Project Path="СustomPracticeTasks/СustomPracticeTasks.csproj" Id="d8ca407b-c449-41bc-9842-48cfd7bb79e7" />
 </Solution>
