@@ -17,8 +17,11 @@ namespace TextRpg
         Archer
     }
 
+
     /// <summary>
     /// Данная программа представляет текстовую RPG игру. Пока план не использовать ООП.
+    /// Также, хочу создать отдельный репозиторий для нее.
+    /// Но пока разрабатываю тут.
     /// </summary>
     internal class Program
     {
@@ -26,6 +29,9 @@ namespace TextRpg
         /// Активности игры
         /// </summary>
         public static bool FlagGameActive = true;
+
+        public static Random rand = new Random();
+
 
         /// <summary>
         /// Имя персонажа
@@ -69,7 +75,8 @@ namespace TextRpg
             // Главыный цикл игры
             while (FlagGameActive)
             {
-                ShowCharacter();
+                Console.Clear();
+                MainMenu();
                 Console.ReadKey(true);
             }
         }
@@ -140,7 +147,6 @@ namespace TextRpg
         /// </summary>
         public static void MessageWithGoodBye()
         {
-            Random rand = new Random();
             ColorMessage("Good Luck My Friend)", (ConsoleColor)rand.Next(1, 15));
             Thread.Sleep(1000);
         }
@@ -183,6 +189,7 @@ namespace TextRpg
                 {
                     ClassSelectionMessage(classNumber);
                     InitializeClassCharacteristics(classNumber);
+                    LoadWorld(61);
                     return;
                 }
 
@@ -192,14 +199,25 @@ namespace TextRpg
         }
 
         /// <summary>
-        /// Проверка введенных данных пользователем
+        /// Имитирует загрузку мира, локации
+        /// Можно удалить. Просто для красоты
         /// </summary>
-        /// <param name="userInput"></param>
-        /// <returns></returns>
-        public static bool IsValidUserInput(int userInput)
+        /// <param name="loadTime">Данный параметр просто отвечает за длительность загрузки. Чем меньше значение, тем меньше загрузка</param>
+        public static void LoadWorld(int loadTime)
         {
-            // TODO
-            return true;
+            Console.CursorVisible = false;   
+            for (int i = 0; i < loadTime; i++)
+            {
+                Console.Write("#");
+                Thread.Sleep(rand.Next(1, 80));
+
+                // игнорирует все нажатия во время имитации загрузки
+                while (Console.KeyAvailable)
+                    Console.ReadKey(true);
+
+            }
+            Console.WriteLine();
+            Console.CursorVisible = true;
         }
 
         /// <summary>
@@ -209,7 +227,7 @@ namespace TextRpg
         {
             ColorMessage("Характеристики классов:", ConsoleColor.DarkYellow);
             ColorMessage("Класс  |  HP |  MP |  Сила |  Ловкость   |  Интеллект | Урон", ConsoleColor.Cyan);
-            ColorMessage("Воин   | 120 |  0  |   10  |      5      |      3     | 8-12", ConsoleColor.Red);
+            ColorMessage("Воин   | 120 |   0 |   10  |      5      |      3     | 8-12", ConsoleColor.Red);
             ColorMessage("Маг    |  80 | 100 |    3  |      5      |     10     | 4-6", ConsoleColor.Blue);
             ColorMessage("Лучник |  90 |   0 |    5  |     10      |      4     | 6-10", ConsoleColor.Green);
 
@@ -252,15 +270,6 @@ namespace TextRpg
         /// </summary>
         public static void ShowCharacter()
         {
-            //Console.WriteLine(
-            //    $"Имя: {CharacterName}\n" +
-            //    $"Класс: {GetClassNameRU(CharacterClass)}\n" +
-            //    $"Здоровье: {CharacterHP}\n" +
-            //    $"Мана: {CharacterMP}\n" +
-            //    $"Урон: {CharacterDamage}\n" +
-            //    $"Сила: {CharacterPower} | Ловкость: {CharacterAgility} | Интеллект: {CharacterIntelligence}"
-            //    );
-
             Console.Write($"Имя: {CharacterName}\n");
             Console.Write($"Класс: {GetClassNameRU(CharacterClass)}\n");
             ColorMessage("Здоровье: ", ConsoleColor.Green, textTransfer: true);
@@ -269,6 +278,8 @@ namespace TextRpg
             Console.Write($"{CharacterMP}\n");
             ColorMessage("Урон: ", ConsoleColor.Red, textTransfer: true);
             Console.Write($"{CharacterDamage}\n");
+            ColorMessage("Статы героя: ", ConsoleColor.Gray, textTransfer: true);
+            Console.Write($"Сила: {CharacterPower} | Ловкость: {CharacterAgility} | Интеллект: {CharacterIntelligence}\n");
         }
 
         /// <summary>
@@ -286,8 +297,8 @@ namespace TextRpg
         {
             // Инициализируем класс персонажа
             CharacterClass = (CharacterClass)playerClass;
+         
+            // TODO
         }
-
-
     }
 }
