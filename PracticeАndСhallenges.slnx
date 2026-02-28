@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="PracticeАndСhallenges/PracticeАndСhallenges.csproj" />
+  <Project Path="TextRpg/TextRpg.csproj" Id="d01fa859-a92e-446b-a7a8-f3b8993eb558" />
   <Project Path="СustomPracticeTasks/СustomPracticeTasks.csproj" Id="d8ca407b-c449-41bc-9842-48cfd7bb79e7" />
 </Solution>
