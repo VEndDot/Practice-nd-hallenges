@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Reflection.Metadata.Ecma335;
-using static System.Net.Mime.MediaTypeNames;
+using System.Text;
 
 namespace TextRpg
 {
@@ -30,8 +29,10 @@ namespace TextRpg
         /// </summary>
         public static bool FlagGameActive = true;
 
+        /// <summary>
+        /// Генерирует псевдо-случайные числа
+        /// </summary>
         public static Random rand = new Random();
-
 
         /// <summary>
         /// Имя персонажа
@@ -65,7 +66,11 @@ namespace TextRpg
         /// Класс персонажа
         /// </summary>
         public static CharacterClass CharacterClass { get; set; }
-
+        
+        /// <summary>
+        /// Инвентарь персонажа
+        /// </summary>
+        public static Dictionary<string, int> CharacterInventory = new Dictionary<string, int>();
 
         static void Main(string[] args)
         {
@@ -77,10 +82,43 @@ namespace TextRpg
             {
                 Console.Clear();
                 MainMenu();
+                Console.CursorVisible = false;
+
+                switch (Console.ReadKey(true).Key)
+                {
+                    // Если нажата 1 - игрок идет в лес
+                    case ConsoleKey.D1:
+                        GoToForest();
+                        break;
+                    // Если нажата 2 - игрок идет в город
+                    case ConsoleKey.D2:
+                        GoToTown();
+                        break;
+                    // Если нажата 3 - показывает информацию о персонаже
+                    case ConsoleKey.D3:
+                        ShowCharacter();
+                        break;
+                    // Если нажата 4 - показывает инвентарь персонажа
+                    case ConsoleKey.D4:
+                        ShowInventory();
+                        break;
+                    // Если нажата 5 - 
+                    case ConsoleKey.D5:
+                        GoToRest();
+                        break;
+                    case ConsoleKey.D6:
+                        FlagGameActive = false;
+                        Console.Clear();
+                        MessageWithGoodBye();
+                        break;
+
+                }
+
+                //ShowCharacter();
+                //ShowInventory();
                 Console.ReadKey(true);
             }
         }
-
 
         /// <summary>
         /// Приветствует игрока и предлагает выбрать класс
@@ -171,9 +209,10 @@ namespace TextRpg
             {
                 MessageForChoose();
 
-                // Проверяет нажатие ESC для выхода из игры
+                // Регистрирует нажатую пользователем клавишу
                 var key = Console.ReadKey(true);
 
+                // Проверяет нажатие ESC для выхода из игры
                 // Выход из программы
                 if (key.Key == ConsoleKey.Escape)
                 {
@@ -189,7 +228,7 @@ namespace TextRpg
                 {
                     ClassSelectionMessage(classNumber);
                     InitializeClassCharacteristics(classNumber);
-                    LoadWorld(61);
+                    //LoadWorld(61);
                     return;
                 }
 
@@ -261,7 +300,7 @@ namespace TextRpg
                 "2. Зайти в город\n" +
                 "3. Посмотреть персонажа\n" +
                 "4. Посмотреть инвентарь\n" +
-                "5. Отдохнуть\n" +
+                "5. Отдохнуть (восстановить здоровье)\n" +
                 "6. Выход");
         }
 
@@ -270,6 +309,7 @@ namespace TextRpg
         /// </summary>
         public static void ShowCharacter()
         {
+            Console.Clear();
             Console.Write($"Имя: {CharacterName}\n");
             Console.Write($"Класс: {GetClassNameRU(CharacterClass)}\n");
             ColorMessage("Здоровье: ", ConsoleColor.Green, textTransfer: true);
@@ -287,18 +327,178 @@ namespace TextRpg
         /// </summary>
         public static void ShowInventory()
         {
-            // TODO
+            Console.Clear();
+            ColorMessage("Инвентарь героя", ConsoleColor.Cyan);
+            foreach (var item in CharacterInventory)
+            { 
+                Console.WriteLine($"- {item.Key}: {item.Value} шт");
+            }
+        }
+
+        /// <summary>
+        /// Начальный инвентарь воина
+        /// </summary>
+        public static void CreateWarriorInventory()
+        {
+            CharacterInventory = new() {
+                ["Лечебное зелье"] = 3,
+            };
+        }
+
+        /// <summary>
+        /// Начальный инвентарь мага
+        /// </summary>
+        public static void CreateMageInventory()
+        {
+            CharacterInventory = new()
+            {
+                ["Лечебное зелье"] = 1,
+                ["Зелье маны"] = 2,
+            };
+        }
+
+        /// <summary>
+        /// Начальный инвентарь лучника
+        /// </summary>
+        public static void CreateArcherInventory()
+        {
+            CharacterInventory = new()
+            {
+                ["Лечебное зелье"] = 2,
+                ["Отравленная стрела"] = 1,
+            };
         }
 
         /// <summary>
         /// Инициализирует характеристики для выбранного класса
+        /// Создает инвентарь классу
         /// </summary>
         public static void InitializeClassCharacteristics(int playerClass)
         {
             // Инициализируем класс персонажа
             CharacterClass = (CharacterClass)playerClass;
-         
-            // TODO
+
+            switch (CharacterClass)
+            {
+                case CharacterClass.Warrior: 
+                    InitializingWarriorStats();
+                    CreateWarriorInventory();
+                    break;
+                case CharacterClass.Mage: 
+                    InitializingMageStats();
+                    CreateMageInventory();
+                    break;
+                case CharacterClass.Archer: 
+                    InitializingArcherStats();
+                    CreateArcherInventory();
+                    break;
+            }
+        }
+
+
+        /// <summary>
+        /// Инициализация стат класса воин
+        /// </summary>
+        public static void InitializingWarriorStats()
+        {
+            /*
+                Класс  |  HP |  MP |  Сила |  Ловкость   |  Интеллект | Урон
+                Воин   | 120 |   0 |   10  |      5      |      3     | 8-12
+            */
+            int damage = rand.Next(8, 13);
+            Stats(120, 0, 10, 5, 3, damage);
+        }
+
+        /// <summary>
+        /// Инициализация стат класса маг
+        /// </summary>
+        public static void InitializingMageStats()
+        {
+            /*
+                Класс  |  HP |  MP |  Сила |  Ловкость   |  Интеллект | Урон
+                Маг    |  80 | 100 |    3  |      5      |     10     | 4-6
+            */
+
+            int damage = rand.Next(4, 7);
+            Stats(80, 100, 3, 5, 10, damage);
+        }
+
+        /// <summary>
+        /// Инициализация стат класса лучник
+        /// </summary>
+        public static void InitializingArcherStats()
+        {
+            /*
+                Класс  |  HP |  MP |  Сила |  Ловкость   |  Интеллект | Урон
+                Лучник |  90 |   0 |    5  |     10      |      4     | 6-10
+            */
+
+            int damage = rand.Next(6, 10);
+            Stats(90, 0, 5, 10, 4, damage);
+        }
+
+        /// <summary>
+        /// Статы классов
+        /// </summary>
+        public static void Stats(int health, int mana, int power, int agility, int intelligence, int damage)
+        {
+            SetNameForCharacter();
+            CharacterHP = health;
+            CharacterMP = mana;
+            CharacterPower = power;
+            CharacterAgility = agility;
+            CharacterIntelligence = intelligence;
+            CharacterDamage = damage;
+        }
+
+        /// <summary>
+        /// Задает имя персонажу
+        /// </summary>
+        /// <returns>Возвращает строку с именем</returns>
+        public static void SetNameForCharacter()
+        {
+            // В данный момент, имя может содержать цифры. Пока решил оставить так
+            string heroName = "Неизвестно";
+            Console.Write("Введите имя героя: ");
+            while (true)
+            {
+                heroName = Console.ReadLine().Trim();
+ 
+                if (string.IsNullOrWhiteSpace(heroName))
+                {
+                    ColorMessage($"Имя не может быть пустым, повторите ввод: ", ConsoleColor.Red, textTransfer: true);
+                    continue;
+                }
+                break;
+            }
+            CharacterName = heroName;
+        }
+
+        /// <summary>
+        /// Поход в лес
+        /// </summary>
+        public static void GoToForest()
+        {
+            Console.Clear();    
+            Console.Write("Ты идешь в лес... (тут будет бой)");
+        }
+
+        /// <summary>
+        /// Вход в город
+        /// </summary>
+        public static void GoToTown()
+        {
+            Console.Clear();
+            Console.Write("Ты в городе... (тут будет магазин)");
+        }
+
+        /// <summary>
+        /// Тут герой отдыхает
+        /// </summary>
+        public static void GoToRest()
+        {
+            Console.Clear();
+            Console.Write("Ты решил отдохнуть... (тут востановится здоровье)");
         }
     }
 }
