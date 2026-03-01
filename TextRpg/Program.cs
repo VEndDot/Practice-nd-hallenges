@@ -1,5 +1,17 @@
 ﻿using System;
+using System.Drawing;
 using System.Text;
+/*
+ Не забыть по LoadWorld. 
+ Можно использовать:
+ - Для отдыха
+ - Для похода
+ - Для загрузки мира
+ - Для вражеской атаки
+!Возможно стоит изменить название
+!Добавить возможность использовать разные символы
+...
+ */
 
 namespace TextRpg
 {
@@ -17,36 +29,47 @@ namespace TextRpg
     }
 
     /// <summary>
+    /// Предметы в игре
+    /// </summary>
+    enum Item
+    { 
+        /// <summary>
+        /// Зелье лечения
+        /// </summary>
+        HealPotion,
+        /// <summary>
+        /// Зелье маны
+        /// </summary>
+        ManaPotion,
+        /// <summary>
+        /// Ядовитая стрела
+        /// </summary>
+        VenomArrow
+    }
+
+    /// <summary>
     /// Данная программа представляет текстовую RPG игру. Пока план не использовать ООП.
     /// Также, хочу создать отдельный репозиторий для нее.
     /// Но пока разрабатываю тут.
     /// </summary>
     internal class Program
     {
-        // Дефолтные значения здоровья
-        public const int WarriorHP = 120;
-        public const int MageHP = 80;
-        public const int ArcherHP = 90;
+        /// <summary>
+        /// Лечит персонажа во время отдыха
+        /// </summary>
+        public const int REST_HEAL_AMOUNT = 20;
 
-        // Дефолтные значения маны
-        public const int WarriorMP = 0;
-        public const int MageMP = 100;
-        public const int ArcherMP = 100;
-
-        // Дефолтные значения силы
-        public const int WarriorPower = 10;
-        public const int MagePower = 3;
-        public const int ArcherPower = 5;
-
-        // Дефолтные значения ловкости
-        public const int WarriorAgility = 5;
-        public const int MageAgility = 5;
-        public const int ArcherAgility = 10;
-
-        // Дефолтные значения интеллекта
-        public const int WarriorIntelligence = 3;
-        public const int MageIntelligence = 10;
-        public const int ArcherIntelligence = 4;
+        /// <summary>
+        /// Хранит статы классов. Участвует в инициалзизации 
+        /// </summary>
+        public static Dictionary<CharacterClass,
+            (int hp, int mp, int power, int agility, int intelligence, (int min, int max) damage)>
+            classStats = new()
+            {
+                [CharacterClass.Warrior] = (120, 0, 10, 5, 3, (8,12)),
+                [CharacterClass.Mage] = (80, 100, 3, 5, 10, (4,6)),
+                [CharacterClass.Archer] = (90, 0, 5, 10, 4, (6, 10))
+            };
 
         /// <summary>
         /// Активности игры
@@ -56,7 +79,7 @@ namespace TextRpg
         /// <summary>
         /// Генерирует псевдо-случайные числа
         /// </summary>
-        public static Random rand = new Random();
+        public static readonly Random _rand = new Random();
 
         /// <summary>
         /// Имя персонажа
@@ -94,7 +117,7 @@ namespace TextRpg
         /// <summary>
         /// Инвентарь персонажа
         /// </summary>
-        public static Dictionary<string, int> CharacterInventory = new Dictionary<string, int>();
+        public static Dictionary<Item, int> CharacterInventory = new Dictionary<Item, int>();
 
         static void Main(string[] args)
         {
@@ -206,7 +229,7 @@ namespace TextRpg
         /// </summary>
         public static void MessageWithGoodBye()
         {
-            ColorMessage("Good Luck My Friend)", (ConsoleColor)rand.Next(1, 15));
+            ColorMessage("Good Luck My Friend)", (ConsoleColor)_rand.Next(1, 15));
             Thread.Sleep(1000);
         }
 
@@ -269,7 +292,7 @@ namespace TextRpg
             for (int i = 0; i < loadTime; i++)
             {
                 Console.Write("#");
-                Thread.Sleep(rand.Next(1, 80));
+                Thread.Sleep(_rand.Next(1, 80));
 
                 // игнорирует все нажатия во время имитации загрузки
                 while (Console.KeyAvailable)
@@ -361,44 +384,29 @@ namespace TextRpg
             {
                 foreach (var item in CharacterInventory)
                 {
-                    Console.WriteLine($"- {item.Key}: {item.Value} шт");
+                    Console.WriteLine($"- {GetItemRuName(item.Key)}: {item.Value} шт");
                 }
             }
-
         }
 
         /// <summary>
-        /// Начальный инвентарь воина
+        /// Изменяет имя перечисления на более подходящее русское для пользователя
         /// </summary>
-        public static void CreateWarriorInventory()
+        /// <param name="item">Получает перечисление</param>
+        /// <returns>Возвращает название предмета на русском</returns>
+        public static string GetItemRuName(Item item)
         {
-            CharacterInventory = new() {
-                ["Лечебное зелье"] = 3,
-            };
-        }
-
-        /// <summary>
-        /// Начальный инвентарь мага
-        /// </summary>
-        public static void CreateMageInventory()
-        {
-            CharacterInventory = new()
+            switch (item) 
             {
-                ["Лечебное зелье"] = 1,
-                ["Зелье маны"] = 2,
-            };
-        }
-
-        /// <summary>
-        /// Начальный инвентарь лучника
-        /// </summary>
-        public static void CreateArcherInventory()
-        {
-            CharacterInventory = new()
-            {
-                ["Лечебное зелье"] = 2,
-                ["Отравленная стрела"] = 1,
-            };
+                case Item.HealPotion:
+                    return "Лечебное зелье";
+                case Item.ManaPotion:
+                    return "Зелье маны";
+                case Item.VenomArrow:
+                    return "Ядовитая стрела";
+                default:
+                    return "Неизвестный предмент/ Обратитесь в GetItemRuName";
+            }
         }
 
         /// <summary>
@@ -409,78 +417,50 @@ namespace TextRpg
         {
             // Инициализируем класс персонажа
             CharacterClass = (CharacterClass)playerClass;
+            // Просим добавить имя персонажу
+            SetNameForCharacter();
+            // Инициализируем статы персонажа
+            InitializingStats(CharacterClass);
+            // инициализируем начальный инвентарь персонажа
+            InitializingInventory(CharacterClass);
+        }
 
-            switch (CharacterClass)
+        /// <summary>
+        /// Инициализирует начальный инвентарь для класса
+        /// </summary>
+        /// <param name="characterClass">Класс создаваемого персонажа</param>
+        public static void InitializingInventory(CharacterClass characterClass) 
+        {
+            // Это дефолтный кейс.
+            switch (characterClass)
             {
-                case CharacterClass.Warrior: 
-                    InitializingWarriorStats();
-                    CreateWarriorInventory();
+                case CharacterClass.Warrior:
+                    CharacterInventory[Item.HealPotion] = 3;
                     break;
-                case CharacterClass.Mage: 
-                    InitializingMageStats();
-                    CreateMageInventory();
+                case CharacterClass.Mage:
+                    CharacterInventory[Item.HealPotion] = 1;
+                    CharacterInventory[Item.ManaPotion] = 2;
                     break;
-                case CharacterClass.Archer: 
-                    InitializingArcherStats();
-                    CreateArcherInventory();
+                case CharacterClass.Archer:
+                    CharacterInventory[Item.HealPotion] = 2;
+                    CharacterInventory[Item.VenomArrow] = 1;
                     break;
             }
         }
 
-
         /// <summary>
-        /// Инициализация стат класса воин
+        /// Устанавливает статы классу
         /// </summary>
-        public static void InitializingWarriorStats()
+        public static void InitializingStats(CharacterClass characterClass)
         {
-            /*
-                Класс  |  HP |  MP |  Сила |  Ловкость   |  Интеллект | Урон
-                Воин   | 120 |   0 |   10  |      5      |      3     | 8-12
-            */
-            int damage = rand.Next(8, 13);
-            Stats(WarriorHP, WarriorMP, WarriorPower, WarriorAgility, WarriorIntelligence, damage);
-        }
+            var stats = classStats[characterClass];
 
-        /// <summary>
-        /// Инициализация стат класса маг
-        /// </summary>
-        public static void InitializingMageStats()
-        {
-            /*
-                Класс  |  HP |  MP |  Сила |  Ловкость   |  Интеллект | Урон
-                Маг    |  80 | 100 |    3  |      5      |     10     | 4-6
-            */
-
-            int damage = rand.Next(4, 7);
-            Stats(MageHP, MageMP, MagePower, MageAgility, MageIntelligence, damage);
-        }
-
-        /// <summary>
-        /// Инициализация стат класса лучник
-        /// </summary>
-        public static void InitializingArcherStats()
-        {
-            /*
-                Класс  |  HP |  MP |  Сила |  Ловкость   |  Интеллект | Урон
-                Лучник |  90 |   0 |    5  |     10      |      4     | 6-10
-            */
-
-            int damage = rand.Next(6, 10);
-            Stats(ArcherHP, ArcherMP, ArcherPower, ArcherAgility, ArcherIntelligence, damage);
-        }
-
-        /// <summary>
-        /// Статы классов
-        /// </summary>
-        public static void Stats(int health, int mana, int power, int agility, int intelligence, int damage)
-        {
-            SetNameForCharacter();
-            CharacterHP = health;
-            CharacterMP = mana;
-            CharacterPower = power;
-            CharacterAgility = agility;
-            CharacterIntelligence = intelligence;
-            CharacterDamage = damage;
+            CharacterHP = stats.hp;
+            CharacterMP = stats.mp;
+            CharacterPower = stats.power;
+            CharacterAgility = stats.agility;
+            CharacterIntelligence = stats.intelligence;
+            CharacterDamage = _rand.Next(stats.damage.min, stats.damage.max + 1);
         }
 
         /// <summary>
@@ -527,48 +507,46 @@ namespace TextRpg
         }
 
         /// <summary>
-        /// ....................TODO!!!
         /// Тут герой отдыхает
         /// </summary>
         public static void GoToRest()
         {
             Console.Clear();
-            Console.WriteLine("Ты решил отдохнуть... (тут востановится здоровье)");
+            ColorMessage("Ты решил отдохнуть... (тут востановится здоровье)", ConsoleColor.Gray);
+            int maxHP = GetMaxHPForClass(CharacterClass);
 
-            // пока сделал напрямую. Будет вынесен в отдельную функцию
-            switch (CharacterClass)
+            // Если у игрока здоровья достаточно, то сообщаем об этом и ничего не делаем
+            if (CharacterHP >= maxHP)
             {
-                case CharacterClass.Warrior:
-                    if (CharacterHP >= WarriorHP)
-                    {
-                        Console.WriteLine("Ты уже здоров. Можешь просто поисидеть");
-                    }
-                    else
-                    {
-                        CharacterHP += 20; // пока магическое число
-                    }
-                    break;
-                case CharacterClass.Mage:
-                    if (CharacterHP >= MageHP)
-                    {
-                        Console.WriteLine("Ты уже здоров. Можешь просто поисидеть");
-                    }
-                    else
-                    { 
-                        CharacterHP += 20; // пока магическое число
-                    }
-                    break;
-                case CharacterClass.Archer:
-                    if (CharacterHP >= ArcherHP)
-                    {
-                        Console.WriteLine("Ты уже здоров. Можешь просто поисидеть");
-                    }
-                    else
-                    {
-                        CharacterHP += 20; // пока магическое число
-                    }
-                    break;
+                ColorMessage("Ты уже здоров...", ConsoleColor.Green);
             }
+            // иниче, увеличиваем здоровье игрока на константу
+            else
+            {
+                // не даст выйти за предел максимального здоровья
+                CharacterHP = Math.Min(CharacterHP + REST_HEAL_AMOUNT, maxHP);
+                MessageForRest();
+            }
+        }
+       
+        /// <summary>
+        /// Позволяет получить значение максимального здоровья для каждого класса
+        /// </summary>
+        /// <param name="characterClass">Принимает класс персонажа</param>
+        /// <returns>Взвращает максимальное здоровье класса</returns>
+        public static int GetMaxHPForClass(CharacterClass characterClass)
+        {
+            return classStats[characterClass].hp;
+        }
+
+        /// <summary>
+        /// Выводит информации об отдыхе
+        /// </summary>
+        public static void MessageForRest()
+        {
+            Console.Write("Твое здоровье увеличино на: ");
+            ColorMessage($"{REST_HEAL_AMOUNT}", ConsoleColor.Green);
+            ColorMessage("Набирайся сил для битвы!", ConsoleColor.Yellow);
         }
     }
 }
