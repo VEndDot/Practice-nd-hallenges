@@ -2,13 +2,12 @@
 using System.Drawing;
 using System.Text;
 /*
- Не забыть по LoadWorld. 
+ Не забыть по ShowAnimation 
  Можно использовать:
  - Для отдыха
  - Для похода
  - Для загрузки мира
  - Для вражеской атаки
-!Возможно стоит изменить название
 !Добавить возможность использовать разные символы
 ...
  */
@@ -209,10 +208,29 @@ namespace TextRpg
 
         /// <summary>
         /// Сообщение приветствия
+        /// TODO: DEMO
         /// </summary>
         public static void MessageWelcome()
-        { 
-            ColorMessage("Добро пожаловать в Мир Тенебрис!\n", ConsoleColor.DarkMagenta);
+        {
+            string message = @" \|/ Странник...";
+            //ColorMessage("Добро пожаловать в Мир Тенебрис!\n", ConsoleColor.DarkMagenta);
+            ShowAnimationMessage(message.Length, message, 100, 500);
+            Thread.Sleep(1000);
+            message = "В тени Тенебрис поет волк серинаду ночьную...";
+            ShowAnimationMessage(message.Length, message);
+            Thread.Sleep(1000);
+            message = "\nдля мертвого странника, безвестного трупа...";
+            ShowAnimationMessage(message.Length, message);
+            Thread.Sleep(800);
+            message = "\nи где-то в туманных лесах...";
+            ShowAnimationMessage(message.Length, message);
+            message = "\nШепотом молвит судьба...";
+            ShowAnimationMessage(message.Length, message);
+            message = "\nПроснись!";
+            ShowAnimationMessage(message.Length, message, 100, 500);
+
+            Thread.Sleep(1500);
+            Console.Clear();
         }
 
         /// <summary>
@@ -272,7 +290,7 @@ namespace TextRpg
                 {
                     ClassSelectionMessage(classNumber);
                     InitializeClassCharacteristics(classNumber);
-                    //LoadWorld(61);
+                    //ShowAnimation(61, '#');
                     return;
                 }
 
@@ -282,18 +300,42 @@ namespace TextRpg
         }
 
         /// <summary>
-        /// Имитирует загрузку мира, локации
+        /// Имитирует загрузку мира, локации, отдыха, атаки врага
         /// Можно удалить. Просто для красоты
         /// </summary>
         /// <param name="loadTime">Данный параметр просто отвечает за длительность загрузки. Чем меньше значение, тем меньше загрузка</param>
-        public static void LoadWorld(int loadTime)
+        public static void ShowAnimation(int loadTime, char symbol)
         {
-            Console.CursorVisible = false;   
+            Console.CursorVisible = false;
             for (int i = 0; i < loadTime; i++)
             {
-                Console.Write("#");
+                Console.Write(symbol);
                 Thread.Sleep(_rand.Next(1, 80));
 
+                // игнорирует все нажатия во время имитации загрузки
+                while (Console.KeyAvailable)
+                    Console.ReadKey(true);
+            }
+            Console.WriteLine();
+            Console.CursorVisible = true;
+        }
+
+        /// <summary>
+        /// Анимирует выводящие сообщения для пользователя
+        /// TODO: DEMO
+        /// </summary>
+        /// <param name="loadTime"></param>
+        /// <param name="str"></param>
+        /// <param name="minDelay"></param>
+        /// <param name="maxDelay"></param>
+        public static void ShowAnimationMessage(int loadTime, string str, int minDelay = 1, int maxDelay = 90)
+        {
+
+            Console.CursorVisible = false;
+            for (int i = 0; i < loadTime; i++)
+            {
+                Console.Write(str[i]);
+                Thread.Sleep(_rand.Next(minDelay, maxDelay));
                 // игнорирует все нажатия во время имитации загрузки
                 while (Console.KeyAvailable)
                     Console.ReadKey(true);
@@ -390,7 +432,7 @@ namespace TextRpg
         }
 
         /// <summary>
-        /// Изменяет имя перечисления на более подходящее русское для пользователя
+        /// Изменяет имя перечисления <see cref="Item"/> на более подходящее русское для пользователя
         /// </summary>
         /// <param name="item">Получает перечисление</param>
         /// <returns>Возвращает название предмета на русском</returns>
@@ -547,6 +589,7 @@ namespace TextRpg
             Console.Write("Твое здоровье увеличино на: ");
             ColorMessage($"{REST_HEAL_AMOUNT}", ConsoleColor.Green);
             ColorMessage("Набирайся сил для битвы!", ConsoleColor.Yellow);
+            ShowAnimation(61, 'Z');
         }
     }
 }
