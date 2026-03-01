@@ -16,7 +16,6 @@ namespace TextRpg
         Archer
     }
 
-
     /// <summary>
     /// Данная программа представляет текстовую RPG игру. Пока план не использовать ООП.
     /// Также, хочу создать отдельный репозиторий для нее.
@@ -24,6 +23,31 @@ namespace TextRpg
     /// </summary>
     internal class Program
     {
+        // Дефолтные значения здоровья
+        public const int WarriorHP = 120;
+        public const int MageHP = 80;
+        public const int ArcherHP = 90;
+
+        // Дефолтные значения маны
+        public const int WarriorMP = 0;
+        public const int MageMP = 100;
+        public const int ArcherMP = 100;
+
+        // Дефолтные значения силы
+        public const int WarriorPower = 10;
+        public const int MagePower = 3;
+        public const int ArcherPower = 5;
+
+        // Дефолтные значения ловкости
+        public const int WarriorAgility = 5;
+        public const int MageAgility = 5;
+        public const int ArcherAgility = 10;
+
+        // Дефолтные значения интеллекта
+        public const int WarriorIntelligence = 3;
+        public const int MageIntelligence = 10;
+        public const int ArcherIntelligence = 4;
+
         /// <summary>
         /// Активности игры
         /// </summary>
@@ -102,20 +126,17 @@ namespace TextRpg
                     case ConsoleKey.D4:
                         ShowInventory();
                         break;
-                    // Если нажата 5 - 
+                    // Если нажата 5 - герой идет отдыхать
                     case ConsoleKey.D5:
                         GoToRest();
                         break;
+                    // Если нажата 6 - выходим из игры
                     case ConsoleKey.D6:
                         FlagGameActive = false;
                         Console.Clear();
                         MessageWithGoodBye();
                         break;
-
                 }
-
-                //ShowCharacter();
-                //ShowInventory();
                 Console.ReadKey(true);
             }
         }
@@ -329,10 +350,21 @@ namespace TextRpg
         {
             Console.Clear();
             ColorMessage("Инвентарь героя", ConsoleColor.Cyan);
-            foreach (var item in CharacterInventory)
-            { 
-                Console.WriteLine($"- {item.Key}: {item.Value} шт");
+
+            // Если инвентарь пуст
+            if (!CharacterInventory.Any())
+            {
+                ColorMessage("Инвентарь пуст", ConsoleColor.Green);
             }
+            // Если не пуст, то показывает его
+            else
+            {
+                foreach (var item in CharacterInventory)
+                {
+                    Console.WriteLine($"- {item.Key}: {item.Value} шт");
+                }
+            }
+
         }
 
         /// <summary>
@@ -406,7 +438,7 @@ namespace TextRpg
                 Воин   | 120 |   0 |   10  |      5      |      3     | 8-12
             */
             int damage = rand.Next(8, 13);
-            Stats(120, 0, 10, 5, 3, damage);
+            Stats(WarriorHP, WarriorMP, WarriorPower, WarriorAgility, WarriorIntelligence, damage);
         }
 
         /// <summary>
@@ -420,7 +452,7 @@ namespace TextRpg
             */
 
             int damage = rand.Next(4, 7);
-            Stats(80, 100, 3, 5, 10, damage);
+            Stats(MageHP, MageMP, MagePower, MageAgility, MageIntelligence, damage);
         }
 
         /// <summary>
@@ -434,7 +466,7 @@ namespace TextRpg
             */
 
             int damage = rand.Next(6, 10);
-            Stats(90, 0, 5, 10, 4, damage);
+            Stats(ArcherHP, ArcherMP, ArcherPower, ArcherAgility, ArcherIntelligence, damage);
         }
 
         /// <summary>
@@ -481,6 +513,7 @@ namespace TextRpg
         {
             Console.Clear();    
             Console.Write("Ты идешь в лес... (тут будет бой)");
+            // TODO
         }
 
         /// <summary>
@@ -490,15 +523,52 @@ namespace TextRpg
         {
             Console.Clear();
             Console.Write("Ты в городе... (тут будет магазин)");
+            // TODO
         }
 
         /// <summary>
+        /// ....................TODO!!!
         /// Тут герой отдыхает
         /// </summary>
         public static void GoToRest()
         {
             Console.Clear();
-            Console.Write("Ты решил отдохнуть... (тут востановится здоровье)");
+            Console.WriteLine("Ты решил отдохнуть... (тут востановится здоровье)");
+
+            // пока сделал напрямую. Будет вынесен в отдельную функцию
+            switch (CharacterClass)
+            {
+                case CharacterClass.Warrior:
+                    if (CharacterHP >= WarriorHP)
+                    {
+                        Console.WriteLine("Ты уже здоров. Можешь просто поисидеть");
+                    }
+                    else
+                    {
+                        CharacterHP += 20; // пока магическое число
+                    }
+                    break;
+                case CharacterClass.Mage:
+                    if (CharacterHP >= MageHP)
+                    {
+                        Console.WriteLine("Ты уже здоров. Можешь просто поисидеть");
+                    }
+                    else
+                    { 
+                        CharacterHP += 20; // пока магическое число
+                    }
+                    break;
+                case CharacterClass.Archer:
+                    if (CharacterHP >= ArcherHP)
+                    {
+                        Console.WriteLine("Ты уже здоров. Можешь просто поисидеть");
+                    }
+                    else
+                    {
+                        CharacterHP += 20; // пока магическое число
+                    }
+                    break;
+            }
         }
     }
 }
